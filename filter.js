@@ -1,4 +1,4 @@
-import { createStateTable } from "./cityTable.js";
+import { createStateTableFromMap } from "./cityTable.js";
 import { createDataTable, resetTable } from "./table.js";
 
 /**
@@ -87,7 +87,7 @@ export function createCityGradeFilter($body, $target, data, labelText, area) {
 
 		const newData = cityGradeFilter(data, area, [minVal, maxVal]);
 		const tableBuilder = () => {
-			createStateTable(newData, $body);
+			createStateTableFromMap(newData, $body);
 		}
 		resetTable($body, "state-table", tableBuilder);
 	};
@@ -107,7 +107,7 @@ export function createCityGradeFilter($body, $target, data, labelText, area) {
 		$gradeFilterMax.value = maxVal;
 		const newData = cityGradeFilter(data, area, [minVal, maxVal]);
 		const tableBuilder = () => {
-			createStateTable(newData, $body);
+			createStateTableFromMap(newData, $body);
 		}
 		resetTable($body, "state-table", tableBuilder);
 	};
@@ -328,7 +328,7 @@ export function createCityPresenceFilter($body, $target, data, label, days) {
 		const newData = cityPresenceFilter(data, [minVal, maxVal], days);
 
 		const tableBuilder = () => {
-			createStateTable(newData, $body);
+			createStateTableFromMap(newData, $body);
 		}
 		resetTable($body, "state-table", tableBuilder);
 	}
@@ -344,7 +344,7 @@ export function createCityPresenceFilter($body, $target, data, label, days) {
 		const newData = cityPresenceFilter(data, [minVal, maxVal], days);
 
 		const tableBuilder = () => {
-			createStateTable(newData, $body);
+			createStateTableFromMap(newData, $body);
 		}
 		resetTable($body, "state-table", tableBuilder);
 	}
