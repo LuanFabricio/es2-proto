@@ -1,8 +1,10 @@
 import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
-import { createStateTable } from "./cityTable.js";
+import { createStateTableFromArray, createStateTableFromMap } from "./cityTable.js";
 import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "./filter.js";
+import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
+import mapToArray from "./utils.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -129,5 +131,15 @@ for (const [label, filterType] of filtros) {
 
 $body.appendChild($filtersDiv);
 
+const $gradeSortDiv = document.createElement("div");
+$gradeSortDiv.style = "display: flex;";
+$gradeSortDiv.id = "sort-city-div";
+
+createCityGradeSortBy($body, $gradeSortDiv, averageGrades, "Organize por: ");
+
+$body.appendChild($gradeSortDiv);
+
 // currentAverageGrades = new Map(averageGrades);
-createStateTable(averageGrades, $body);
+const sortedAverageGrades = cityGradeSortBy(mapToArray(averageGrades), "municipio")
+createStateTableFromArray(sortedAverageGrades, $body);
+// createStateTableFromArray([{ city: "M1", total: { cn: 400, ch: 400, lc: 400, mt: 400, redacao: { comps: [120,120,120,120,120], total: 600 }, geral: 600}, size: [50, 50] }], $body)
