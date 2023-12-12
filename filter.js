@@ -235,3 +235,66 @@ function dataGradeFilter(data, filterType, range) {
 
 	return newData;
 }
+
+/**
+* @param {HTMLBodyElement} $body 
+* @param {HTMLDivElement} $target
+* @param {Data[]} data 
+* @param {string} label 
+* @param {number[]} days 
+* */
+export function createDataPresenceFilter($body, $target, data, label, days) {
+	const $presenceFilterDiv = document.createElement("div");
+	$presenceFilterDiv.style = "margin: 0px 10px;";
+	const $presenceFilterLabel = document.createElement("label");
+	$presenceFilterLabel.innerText = label;
+
+	$presenceFilterDiv.appendChild($presenceFilterLabel);
+
+	const $selector = document.createElement("select");
+
+	const options = [["Todos", -1], ["Presente", 1], ["Ausente", 0], ["Eliminado", 2]];
+	options.forEach(([option, value]) => {
+		const $option = document.createElement("option");
+		$option.value = value;
+		$option.innerText = option;
+
+		$selector.appendChild($option);
+	});
+	$selector.value = -1;
+
+	$selector.onchange = () => {
+		const newData = dataPresenceFilter(data, $selector.value, days);
+
+		const tableBuilder = () => {
+			createDataTable(newData, $body);
+		};
+
+		resetTable($body, "main-table", tableBuilder);
+	}
+
+	$presenceFilterDiv.appendChild($selector);
+
+	$target.appendChild($presenceFilterDiv);
+}
+
+/**
+* @param {Data[]} data 
+* @param {string} option 
+* @param {number[]} days 
+* @returns {Data[]}
+* */
+function dataPresenceFilter(data, option, days) {
+	if(option == -1) {
+		return data;
+	}
+
+	return data.filter(row => {
+		for (const day of days) {
+			if (row.presenca[day] != option) {
+				return false;
+			}
+		}
+		return true;
+	});
+}
