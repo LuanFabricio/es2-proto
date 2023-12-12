@@ -2,7 +2,7 @@ import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
 import { createStateTable } from "./cityTable.js";
-import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter } from "./filter.js";
+import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "./filter.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -97,6 +97,16 @@ for (const key of averageGrades.keys()) {
 }
 
 $body.appendChild(document.createElement("br"));
+
+const $cityPresenceFilters = document.createElement("div");
+$cityPresenceFilters.style = "display: flex;";
+$cityPresenceFilters.id = "filters-grade-div";
+
+createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença dia 1: ", [0]);
+createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença dia 2: ", [1]);
+createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença nos dias 1 e 2: ", [0, 1]);
+
+$body.appendChild($cityPresenceFilters);
 
 const $filtersDiv = document.createElement("div");
 $filtersDiv.style = "display: flex;";
