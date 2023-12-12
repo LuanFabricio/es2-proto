@@ -2,7 +2,7 @@ import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
 import { createStateTable } from "./cityTable.js";
-import { createCityGradeFilter, createCityFilter, createDataGradeFilter } from "./filter.js";
+import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter } from "./filter.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -17,6 +17,15 @@ const $body = document.getElementsByTagName("body")[0];
 
 const $mainTableDiv = document.createElement("div");
 createCityFilter(db.findAll(), $mainTableDiv);
+
+const $presenceFilterDiv = document.createElement("div");
+$presenceFilterDiv.style = "display: flex;";
+$presenceFilterDiv.id = "filters-presence-div";
+createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 1: ", [0]);
+createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 2: ", [1]);
+createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença nos dois dias: ", [0, 1]);
+
+$mainTableDiv.appendChild($presenceFilterDiv);
 
 const $dataFiltersDiv = document.createElement("div");
 $dataFiltersDiv.style = "display: flex;";
