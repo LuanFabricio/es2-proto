@@ -66,7 +66,27 @@ for (const key of averageGrades.keys()) {
 
 $body.appendChild(document.createElement("br"));
 
-createGradeFilter($body, averageGrades, "geral");
+const $filtersDiv = document.createElement("div");
+$filtersDiv.style = "display: flex;";
+$filtersDiv.id = "filters-grade-div";
 
-const currentAverageGrades = new Map(averageGrades);
+createGradeFilter($body, $filtersDiv, averageGrades, "Filtro da média geral: ", "geral");
+
+const filtros = [
+	["Média das notas de Redação: ", "redacao"],
+	["Média das notas de Ciências Humanas: ", "ch"],
+	["Média das notas de Linguagens e Códigos: ", "lc"],
+	["Média das notas de Ciências da Natureza: ", "cn"],
+	["Média das notas de Matemática: ", "mt"],
+];
+
+let currentAverageGrades;
+for (const [label, filterType] of filtros) {
+	currentAverageGrades = new Map(currentAverageGrades);
+	createGradeFilter($body, $filtersDiv, currentAverageGrades, label, filterType);
+}
+
+$body.appendChild($filtersDiv);
+
+currentAverageGrades = new Map(averageGrades);
 createStateTable(currentAverageGrades, $body);
