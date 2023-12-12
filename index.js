@@ -2,7 +2,7 @@ import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
 import { createStateTable } from "./cityTable.js";
-import { createGradeFilter, createCityFilter } from "./filter.js";
+import { createCityGradeFilter, createCityFilter, createDataGradeFilter } from "./filter.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -15,8 +15,31 @@ let currentData = db.findAll();
 
 const $body = document.getElementsByTagName("body")[0];
 
-createCityFilter(db.findAll(), $body);
-createDataTable(currentData, $body);
+const $mainTableDiv = document.createElement("div");
+createCityFilter(db.findAll(), $mainTableDiv);
+
+const $dataFiltersDiv = document.createElement("div");
+$dataFiltersDiv.style = "display: flex;";
+$dataFiltersDiv.id = "filters-grade-div";
+
+const dataFiltros = [
+	["Ciências da Natureza: ", "cn"],
+	["Ciências Humanas: ", "ch"],
+	["Linguagens e Códigos: ", "lc"],
+	["Matemática: ", "mt"],
+	["Redação: ", "redacao"],
+	["Média geral: ", "geral"],
+];
+
+for (const [label, filterType] of dataFiltros) {
+	createDataGradeFilter($mainTableDiv, $dataFiltersDiv, currentData, label, filterType);
+}
+
+$mainTableDiv.appendChild($dataFiltersDiv);
+
+createDataTable(currentData, $mainTableDiv);
+
+$body.appendChild($mainTableDiv);
 
 const averageGrades = calcMetrics(currentData);
 
@@ -70,23 +93,23 @@ const $filtersDiv = document.createElement("div");
 $filtersDiv.style = "display: flex;";
 $filtersDiv.id = "filters-grade-div";
 
-createGradeFilter($body, $filtersDiv, averageGrades, "Filtro da média geral: ", "geral");
+createCityGradeFilter($body, $filtersDiv, averageGrades, "Filtro da média geral: ", "geral");
 
 const filtros = [
-	["Média das notas de Redação: ", "redacao"],
+	["Média das notas de Ciências da Natureza: ", "cn"],
 	["Média das notas de Ciências Humanas: ", "ch"],
 	["Média das notas de Linguagens e Códigos: ", "lc"],
-	["Média das notas de Ciências da Natureza: ", "cn"],
 	["Média das notas de Matemática: ", "mt"],
+	["Média das notas de Redação: ", "redacao"],
 ];
 
-let currentAverageGrades;
+// let currentAverageGrades = new Map(averageGrades);
 for (const [label, filterType] of filtros) {
-	currentAverageGrades = new Map(currentAverageGrades);
-	createGradeFilter($body, $filtersDiv, currentAverageGrades, label, filterType);
+	// currentAverageGrades = new Map(currentAverageGrades);
+	createCityGradeFilter($body, $filtersDiv, averageGrades, label, filterType);
 }
 
 $body.appendChild($filtersDiv);
 
-currentAverageGrades = new Map(averageGrades);
-createStateTable(currentAverageGrades, $body);
+// currentAverageGrades = new Map(averageGrades);
+createStateTable(averageGrades, $body);
