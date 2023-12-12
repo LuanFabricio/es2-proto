@@ -93,14 +93,13 @@ const $filtersDiv = document.createElement("div");
 $filtersDiv.style = "display: flex;";
 $filtersDiv.id = "filters-grade-div";
 
-createCityGradeFilter($body, $filtersDiv, averageGrades, "Filtro da média geral: ", "geral");
-
 const filtros = [
-	["Média das notas de Ciências da Natureza: ", "cn"],
-	["Média das notas de Ciências Humanas: ", "ch"],
-	["Média das notas de Linguagens e Códigos: ", "lc"],
-	["Média das notas de Matemática: ", "mt"],
-	["Média das notas de Redação: ", "redacao"],
+	["Média Ciências da Natureza: ", "cn"],
+	["Média Ciências Humanas: ", "ch"],
+	["Média Linguagens e Códigos: ", "lc"],
+	["Média Matemática: ", "mt"],
+	["Média Redação: ", "redacao"],
+	["Média geral: ", "geral"]
 ];
 
 // let currentAverageGrades = new Map(averageGrades);
