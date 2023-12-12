@@ -109,8 +109,10 @@ export function createTableHeader($table) {
 * */
 export function resetTable($body, id, tableBuilder) {
 	const $table = document.getElementById(id);
-	$body.removeChild($table);
 
+	if ($table) {
+		$body.removeChild($table);
+	}
 	tableBuilder();
 	// createDataTable(currentData);
 }
