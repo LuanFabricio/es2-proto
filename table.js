@@ -5,7 +5,7 @@
 
 /**
 * @param {Data[]} data 
-* @param {HTMLBodyElement} data 
+* @param {HTMLBodyElement} $body 
 * */
 export function createDataTable(data, $body) {
 	const $table = document.createElement("table");
@@ -42,7 +42,7 @@ export function createDataTable(data, $body) {
 		$thGeral.innerText = row.notas.geral;
 		$row.appendChild($thGeral);
 
-		const presenca = ["Faltou", "Presente", "Eliminado"];
+		const presenca = ["Ausente", "Presente", "Eliminado"];
 
 		const $thPresenca1 = document.createElement("th");
 		$thPresenca1.innerText = presenca[row.presenca[0]];
