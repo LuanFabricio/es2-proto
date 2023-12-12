@@ -298,3 +298,100 @@ function dataPresenceFilter(data, option, days) {
 		return true;
 	});
 }
+
+/**
+* @param {HTMLBodyElement} $body 
+* @param {HTMLDivElement} $target
+* @param {Map<string, {total: Notas[], size: number[]}>} data 
+* @param {string} label 
+* @param {number[]} days 
+* */
+export function createCityPresenceFilter($body, $target, data, label, days) {
+	const $presenceFilterDiv = document.createElement("div");
+	$presenceFilterDiv.style = "margin: 0px 10px;";
+	const $presenceFilterLabel = document.createElement("label");
+	$presenceFilterLabel.innerText = label;
+
+	$presenceFilterDiv.appendChild($presenceFilterLabel);
+
+	const $presenceFilterMin = createFilterInput(0);
+	const $presenceFilterMax = createFilterInput(100);
+
+	$presenceFilterMin.oninput = () => {
+		let minVal = parseInt($presenceFilterMin.value || "0");
+		const maxVal = parseInt($presenceFilterMax.value || "0");
+
+		minVal = Math.min(minVal, 100);
+		minVal = Math.max(minVal, 0);
+		$presenceFilterMin.value = minVal;
+		
+		const newData = cityPresenceFilter(data, [minVal, maxVal], days);
+
+		const tableBuilder = () => {
+			createStateTable(newData, $body);
+		}
+		resetTable($body, "state-table", tableBuilder);
+	}
+
+	$presenceFilterMax.oninput = () => {
+		const minVal = parseInt($presenceFilterMin.value || "0");
+		let maxVal = parseInt($presenceFilterMax.value || "0");
+		
+		maxVal = Math.min(maxVal, 100);
+		maxVal = Math.max(maxVal, 0);
+		$presenceFilterMax.value = maxVal;
+
+		const newData = cityPresenceFilter(data, [minVal, maxVal], days);
+
+		const tableBuilder = () => {
+			createStateTable(newData, $body);
+		}
+		resetTable($body, "state-table", tableBuilder);
+	}
+
+	$presenceFilterDiv.appendChild($presenceFilterMin);
+	const $presenceFilterSeparator = document.createElement("span");
+	$presenceFilterSeparator.innerText = " - ";
+	$presenceFilterDiv.appendChild($presenceFilterSeparator);
+	$presenceFilterDiv.appendChild($presenceFilterMax);
+
+	const $presenceFilterPercentage = document.createElement("label");
+	$presenceFilterPercentage.innerText = "%";
+	$presenceFilterDiv.appendChild($presenceFilterPercentage);
+
+	$target.appendChild($presenceFilterDiv);
+}
+
+/**
+* @param {Map<string, {total: Notas[], size: number[]}>} data 
+* @param {string} range 
+* @param {number[]} days 
+* @returns {Map<string, {total: Notas[], size: number[]}>}
+* */
+function cityPresenceFilter(data, range, days) {
+	/** @type {Map<string, {total: Notas[], size: number[]}>} */
+	const newData = new Map();
+
+	const [low, high] = range;
+
+	for (const key of data.keys()) {
+		const row = data.get(key);
+
+		const isValid = () => {
+			for (const day of days) {
+				const presence = row.size[day];
+				if (!(low <= presence && high >= presence)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		console.log(row, range, days);
+		if (row && isValid()) {
+			newData.set(key, row);
+		}
+	}
+
+	return newData;
+}
