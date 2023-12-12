@@ -1,8 +1,9 @@
 import { createStateTable } from "./cityTable.js";
-import { resetTable } from "./table.js";
+import { createDataTable, resetTable } from "./table.js";
 
 /**
 * @typedef {import("./database.js").Notas} Notas
+* @typedef {import("./database.js").Data} Data
 * */
 
 /**
@@ -66,7 +67,7 @@ export function createCityFilter(data, $body) {
 * @param {string} labelText 
 * @param {string} area 
 * */
-export function createGradeFilter($body, $target, data, labelText, area) {
+export function createCityGradeFilter($body, $target, data, labelText, area) {
 	const $gradeFilterDiv = document.createElement("div");
 	$gradeFilterDiv.style = "margin: 0px 10px;";
 	const $gradeFilterLabel = document.createElement("label");
@@ -75,13 +76,7 @@ export function createGradeFilter($body, $target, data, labelText, area) {
 	$gradeFilterDiv.appendChild($gradeFilterLabel);
 	$gradeFilterDiv.appendChild(document.createElement("br"));
 
-	const $gradeFilterMin = document.createElement("input");
-	$gradeFilterMin.type = "number";
-	$gradeFilterMin.style = "width: 55px;"
-	$gradeFilterMin.defaultValue = 0;
-	$gradeFilterMin.min = 0;
-	$gradeFilterMin.step = 10;
-	$gradeFilterMin.max = 1000;
+	const $gradeFilterMin = createFilterInput(0);
 	$gradeFilterMin.oninput = () => {
 		const maxVal = parseInt($gradeFilterMax.value | "0");
 		let minVal = parseInt($gradeFilterMin.value | "0");
@@ -90,7 +85,7 @@ export function createGradeFilter($body, $target, data, labelText, area) {
 
 		$gradeFilterMin.value = minVal;
 
-		const newData = gradeFilter(data, area, [minVal, maxVal]);
+		const newData = cityGradeFilter(data, area, [minVal, maxVal]);
 		const tableBuilder = () => {
 			createStateTable(newData, $body);
 		}
@@ -102,13 +97,7 @@ export function createGradeFilter($body, $target, data, labelText, area) {
 	$gradeFilterSeparator.innerText = " - "
 	$gradeFilterDiv.appendChild($gradeFilterSeparator);
 
-	const $gradeFilterMax = document.createElement("input");
-	$gradeFilterMax.type = "number";
-	$gradeFilterMax.style = "width: 55px;"
-	$gradeFilterMax.defaultValue = 1000;
-	$gradeFilterMax.min = 0;
-	$gradeFilterMax.step = 10;
-	$gradeFilterMax.max = 1000;
+	const $gradeFilterMax = createFilterInput(1000);
 	$gradeFilterMax.oninput = () => {
 		const minVal = parseInt($gradeFilterMin.value | "0");
 		let maxVal = parseInt($gradeFilterMax.value | "0");
@@ -116,7 +105,7 @@ export function createGradeFilter($body, $target, data, labelText, area) {
 		maxVal = Math.min(maxVal, 1000);
 
 		$gradeFilterMax.value = maxVal;
-		const newData = gradeFilter(data, area, [minVal, maxVal]);
+		const newData = cityGradeFilter(data, area, [minVal, maxVal]);
 		const tableBuilder = () => {
 			createStateTable(newData, $body);
 		}
@@ -134,7 +123,7 @@ export function createGradeFilter($body, $target, data, labelText, area) {
 * @param {number[]} range 
 * @returns {Map<string, {total: Notas, size: number[]}>}
 * */
-function gradeFilter(data, filterType, range) {
+function cityGradeFilter(data, filterType, range) {
 	/** @type {Map<string, { total: Notas, size: number[] }>} */
 	const newData = new Map();
 	const [low, high] = range;
@@ -147,6 +136,100 @@ function gradeFilter(data, filterType, range) {
 			if (grade >= low && grade <= high) {
 				newData.set(key, row);
 			}
+		}
+	}
+
+	return newData;
+}
+
+/**
+* @param {HTMLBodyElement} $body 
+* @param {HTMLDivElement} $target 
+* @param {Data[]} data
+* @param {string} labelText 
+* @param {string} area 
+* */
+export function createDataGradeFilter($body, $target, data, labelText, area) {
+	const $gradeFilterDiv = document.createElement("div");
+	$gradeFilterDiv.style = "margin: 0px 10px;";
+	const $gradeFilterLabel = document.createElement("label");
+	$gradeFilterLabel.innerText = labelText;
+
+	$gradeFilterDiv.appendChild($gradeFilterLabel);
+	$gradeFilterDiv.appendChild(document.createElement("br"));
+
+	const $gradeFilterMin = createFilterInput(0);
+	$gradeFilterMin.oninput = () => {
+		const maxVal = parseInt($gradeFilterMax.value | "0");
+		let minVal = parseInt($gradeFilterMin.value | "0");
+		minVal = Math.max(minVal, 0);
+		minVal = Math.min(minVal, 1000);
+
+		$gradeFilterMin.value = minVal;
+
+		const newData = dataGradeFilter(data, area, [minVal, maxVal]);
+		const tableBuilder = () => {
+			createDataTable(newData, $body);
+		}
+		resetTable($body, "main-table", tableBuilder);
+	};
+	$gradeFilterDiv.appendChild($gradeFilterMin);
+
+	const $gradeFilterSeparator = document.createElement("label");
+	$gradeFilterSeparator.innerText = " - "
+	$gradeFilterDiv.appendChild($gradeFilterSeparator);
+
+	const $gradeFilterMax = createFilterInput(1000);
+	$gradeFilterMax.oninput = () => {
+		const minVal = parseInt($gradeFilterMin.value | "0");
+		let maxVal = parseInt($gradeFilterMax.value | "0");
+		maxVal = Math.max(maxVal, 0);
+		maxVal = Math.min(maxVal, 1000);
+
+		$gradeFilterMax.value = maxVal;
+		const newData = dataGradeFilter(data, area, [minVal, maxVal]);
+		const tableBuilder = () => {
+			createDataTable(newData, $body);
+		}
+		resetTable($body, "main-table", tableBuilder);
+	};
+
+	$gradeFilterDiv.appendChild($gradeFilterMax);
+
+	$target.appendChild($gradeFilterDiv);
+}
+
+/**
+* @param {number} defaultValue 
+* @returns {HTMLInputElement}
+* */
+function createFilterInput(defaultValue) {
+	const $gradeFilter = document.createElement("input");
+	$gradeFilter.type = "number";
+	$gradeFilter.style = "width: 55px;"
+	$gradeFilter.defaultValue = defaultValue;
+	$gradeFilter.min = 0;
+	$gradeFilter.step = 10;
+	$gradeFilter.max = 1000;
+
+	return $gradeFilter
+}
+
+/**
+* @param {Data[]} data 
+* @param {string} gradeType 
+* @param {number[]} range 
+* @returns {Data[]}
+* */
+function dataGradeFilter(data, filterType, range) {
+	/** @type {Data[]} */
+	const newData = [];
+	const [low, high] = range;
+
+	for (const row of data) {
+		const grade = filterType == "redacao" ? row.notas.redacao.total : row.notas[filterType];
+		if (grade >= low && grade <= high) {
+			newData.push(row)
 		}
 	}
 
