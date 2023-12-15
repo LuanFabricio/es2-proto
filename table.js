@@ -107,11 +107,11 @@ export function createTableHeader($table) {
 * @param {string} id 
 * @param {Function} tableBuilder 
 * */
-export function resetTable($body, id, tableBuilder) {
+export function resetTable(id, tableBuilder) {
 	const $table = document.getElementById(id);
 
 	if ($table) {
-		$body.removeChild($table);
+		$table.remove();
 	}
 	tableBuilder();
 	// createDataTable(currentData);

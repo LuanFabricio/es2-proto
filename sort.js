@@ -43,7 +43,7 @@ export default function createCityGradeSortBy($body, $target, data, label) {
 			createStateTableFromArray(sortedData, $body);
 		};
 
-		resetTable($body, "state-table", tableBuilder);
+		resetTable("state-table", tableBuilder);
 	};
 
 	$gradeSortDiv.appendChild($select);
