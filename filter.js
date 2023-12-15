@@ -1,4 +1,5 @@
 import { createStateTable } from "./cityTable.js";
+import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 
 /**
@@ -9,8 +10,9 @@ import { createDataTable, resetTable } from "./table.js";
 /**
 * @param {Data[]} data 
 * @param {HTMLBodyElement} $body
+* @param {HTMLDivElement} $target
 * */
-export function createCityFilter(data, $body) {
+export function createCityFilter(data, $body, $target) {
 	const $cityFilterDiv = document.createElement("div");
 	const $filterLabel = document.createElement("label");
 	$filterLabel.innerText = "Filtro por município: ";
@@ -46,18 +48,24 @@ export function createCityFilter(data, $body) {
 	$filter.onchange = () => {
 		const newFilterValue = $filter.value;
 		
+		let currentData;
 		if (newFilterValue == $allFilter.value) {
+			const db = new Database();
 			currentData = db.findAll();
 		} else {
 			currentData = data.filter((val) => val.municipio == newFilterValue);
 		}
 
-		resetTable($body, "main-table");
+		const tableBuilder = () => {
+			createDataTable(currentData, $body);
+		};
+
+		resetTable($body, "main-table", tableBuilder);
 	};
 
 	$cityFilterDiv.appendChild($filter);
 
-	$body.appendChild($cityFilterDiv);
+	$target.appendChild($cityFilterDiv);
 }
 
 /**
