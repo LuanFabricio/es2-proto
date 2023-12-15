@@ -1,5 +1,4 @@
 import { createStateTableFromMap } from "./cityTable.js";
-import { Database } from "./database.js";
 import { createDataTable, resetTable } from "./table.js";
 import { Database } from "./database.js";
 
