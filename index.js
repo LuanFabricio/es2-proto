@@ -143,7 +143,7 @@ const $gradeSortDiv = document.createElement("div");
 $gradeSortDiv.style = "display: flex;";
 $gradeSortDiv.id = "sort-city-div";
 
-createCityGradeSortBy($body, $gradeSortDiv, averageGrades, "Organize por: ");
+createCityGradeSortBy($stateDiv, $gradeSortDiv, averageGrades, "Organize por: ");
 
 $body.appendChild($gradeSortDiv);
 
