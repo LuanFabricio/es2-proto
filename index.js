@@ -6,6 +6,8 @@ import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createD
 import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
 import { addExportBtn } from "./export.js";
+import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
+import mapToArray from "./utils.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
