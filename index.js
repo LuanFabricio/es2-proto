@@ -3,6 +3,7 @@ import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
 import { createStateTable } from "./cityTable.js";
 import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "./filter.js";
+import { addExportBtn } from "./export.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -16,7 +17,9 @@ let currentData = db.findAll();
 const $body = document.getElementsByTagName("body")[0];
 
 const $mainTableDiv = document.createElement("div");
-createCityFilter(db.findAll(), $mainTableDiv);
+const $mainDiv = document.createElement("div");
+
+createCityFilter(db.findAll(), $mainTableDiv, $mainDiv);
 
 const $presenceFilterDiv = document.createElement("div");
 $presenceFilterDiv.style = "display: flex;";
@@ -25,7 +28,7 @@ createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presen
 createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 2: ", [1]);
 createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença nos dois dias: ", [0, 1]);
 
-$mainTableDiv.appendChild($presenceFilterDiv);
+$mainDiv.appendChild($presenceFilterDiv);
 
 const $dataFiltersDiv = document.createElement("div");
 $dataFiltersDiv.style = "display: flex;";
@@ -44,11 +47,14 @@ for (const [label, filterType] of dataFiltros) {
 	createDataGradeFilter($mainTableDiv, $dataFiltersDiv, currentData, label, filterType);
 }
 
-$mainTableDiv.appendChild($dataFiltersDiv);
+$mainDiv.appendChild($dataFiltersDiv);
 
 createDataTable(currentData, $mainTableDiv);
 
-$body.appendChild($mainTableDiv);
+$mainDiv.appendChild($mainTableDiv);
+addExportBtn($mainDiv);
+
+$body.appendChild($mainDiv);
 
 const averageGrades = calcMetrics(currentData);
 
@@ -102,9 +108,11 @@ const $cityPresenceFilters = document.createElement("div");
 $cityPresenceFilters.style = "display: flex;";
 $cityPresenceFilters.id = "filters-grade-div";
 
-createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença dia 1: ", [0]);
-createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença dia 2: ", [1]);
-createCityPresenceFilter($body, $cityPresenceFilters, averageGrades, "Presença nos dias 1 e 2: ", [0, 1]);
+const $stateDiv = document.createElement("div");
+
+createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 1: ", [0]);
+createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 2: ", [1]);
+createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença nos dias 1 e 2: ", [0, 1]);
 
 $body.appendChild($cityPresenceFilters);
 
@@ -124,10 +132,12 @@ const filtros = [
 // let currentAverageGrades = new Map(averageGrades);
 for (const [label, filterType] of filtros) {
 	// currentAverageGrades = new Map(currentAverageGrades);
-	createCityGradeFilter($body, $filtersDiv, averageGrades, label, filterType);
+	createCityGradeFilter($stateDiv, $filtersDiv, averageGrades, label, filterType);
 }
 
 $body.appendChild($filtersDiv);
 
 // currentAverageGrades = new Map(averageGrades);
-createStateTable(averageGrades, $body);
+createStateTable(averageGrades, $stateDiv);
+$body.appendChild($stateDiv);
+addExportBtn($body);
