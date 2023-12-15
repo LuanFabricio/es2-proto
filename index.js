@@ -3,9 +3,9 @@ import { createDataTable, resetTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
 import { createStateTableFromArray, createStateTableFromMap } from "./cityTable.js";
 import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "./filter.js";
-import { addExportBtn } from "./export.js";
 import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
+import { addExportBtn } from "./export.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -153,4 +153,3 @@ createStateTableFromArray(sortedAverageGrades, $stateDiv);
 $body.appendChild($stateDiv);
 addExportBtn($body);
 // createStateTableFromArray([{ city: "M1", total: { cn: 400, ch: 400, lc: 400, mt: 400, redacao: { comps: [120,120,120,120,120], total: 600 }, geral: 600}, size: [50, 50] }], $body)
-
