@@ -18,6 +18,16 @@ let currentData = db.findAll();
 
 const $body = document.getElementsByTagName("body")[0];
 
+const $adminLogin = document.createElement("button");
+$adminLogin.innerText = "Admin";
+$adminLogin.onclick = () => {
+	window.location = "/login";
+};
+const $adminLoginDiv = document.createElement("div");
+$adminLoginDiv.appendChild($adminLogin);
+$adminLoginDiv.style = "display: flex; align-items: end; flex-direction: row-reverse;";
+$body.appendChild($adminLoginDiv);
+
 const $mainTableDiv = document.createElement("div");
 const $mainDiv = document.createElement("div");
 
