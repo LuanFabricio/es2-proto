@@ -1,0 +1,22 @@
+<header>
+	<meta charset="utf-8">
+</header>
+<body>
+	<center>
+		<form id="db-form">
+			Envie a nova base dados.<br>
+			<br>
+			<input type="file"><br>
+			<br>
+			<input type="submit" value="Enviar">
+		</form>
+	</center>
+
+	<script>
+		const $dbSubmit = document.getElementById("db-form");
+		$dbSubmit.onsubmit = (e) => {
+			e.preventDefault();
+			window.location = "/";
+		};
+	</script>
+</body>
