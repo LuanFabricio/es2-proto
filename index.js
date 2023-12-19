@@ -6,7 +6,7 @@ import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createD
 import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
 import { addExportBtn } from "./export.js";
-import { createChart, createChartCanvas, createCityChart } from "./chart.js";
+import { createChart, createChartCanvas, createCityChart, createPresenceChart } from "./chart.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -192,9 +192,16 @@ chartDivs2.forEach(({ title, grade }) => {
 	$chartDiv2.appendChild($chartDiv);
 })
 
+const $chartDiv3 = document.createElement("div");
+$chartDiv3.style = "display: flex; alignt-items: center; justify-content: space-around;"
+const $chartPresenceDiv = document.createElement("div");
+createPresenceChart(`city-presence-chart`, averageGrades, $chartPresenceDiv);
+$chartDiv3.appendChild($chartPresenceDiv);
+
 const $chartDivGroup = document.createElement("div");
 
 $chartDivGroup.appendChild($chartDiv1);
 $chartDivGroup.appendChild($chartDiv2);
+$chartDivGroup.appendChild($chartDiv3);
 
 $body.appendChild($chartDivGroup);
