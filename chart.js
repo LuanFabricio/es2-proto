@@ -20,6 +20,20 @@ export function createChart(id, data, grade, title, $target) {
 
 /**
 * @param {string} id 
+* @param {Map<string, {total: Notas, size: number[]}>} data 
+* @param {HTMLDivElement} $target 
+* */
+export function createPresenceChart(id, data, $target) {
+	const $chart = createChartCanvas(id);
+	createCityPresenceChart($chart, data);
+
+	$target.style = "height:320px; width:320px;";
+
+	$target.appendChild($chart);
+}
+
+/**
+* @param {string} id 
 * @returns {HTMLCanvasElement}
 * */
 export function createChartCanvas(id) {
@@ -31,6 +45,52 @@ export function createChartCanvas(id) {
 	console.log($canvas);
 
 	return $canvas;
+}
+
+/**
+* @param {HTMLCanvasElement} $chart
+* @param {Map<string, {total: Notas, size: number[]}>} data 
+* */
+function createCityPresenceChart($chart, data) {
+	const labels = [];
+	const day1 = [];
+	const day2 = [];
+
+	for (const key of data.keys()) {
+		const row = data.get(key);
+
+		if (row) {
+			labels.push(key);
+			day1.push(row.size[0]);
+			day2.push(row.size[1]);
+		}
+	}
+
+	new Chart($chart, {
+		type: "bar",
+		data: {
+			labels,
+			datasets: [
+				{
+					label: "Presença no dia 1(%)",
+					data: day1,
+					borderWidth: 1
+				},
+				{
+					label: "Presença no dia 2(%)",
+					data: day2,
+					borderWidth: 1
+				},
+			]
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	});
 }
 
 /**
