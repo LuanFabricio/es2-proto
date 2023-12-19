@@ -6,7 +6,7 @@ import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createD
 import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
 import { addExportBtn } from "./export.js";
-import { createChartCanvas, createCityChart } from "./chart.js";
+import { createChart, createChartCanvas, createCityChart } from "./chart.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -155,7 +155,46 @@ $body.appendChild($stateDiv);
 addExportBtn($body);
 // createStateTableFromArray([{ city: "M1", total: { cn: 400, ch: 400, lc: 400, mt: 400, redacao: { comps: [120,120,120,120,120], total: 600 }, geral: 600}, size: [50, 50] }], $body)
 
-const $chartCity = createChartCanvas("city-geral-chart");
-createCityChart($chartCity, averageGrades);
+// const $chartCity = createChartCanvas("city-geral-chart");
+// createCityChart($chartCity, averageGrades, "geral", "Média geral");
+// 
+// $chartDiv.style = "height:40vh; width:80vw;";
+// 
+// $chartDiv.appendChild($chartCity);
 
-$body.appendChild($chartCity);
+const chartDivs1 = [
+	{ title: "Média redação", grade: "redação" },
+	{ title: "Média LC", grade: "lc" },
+	{ title: "Média CH", grade: "ch" },
+];
+
+const $chartDiv1 = document.createElement("div");
+$chartDiv1.style = "display: flex; alignt-items: center; justify-content: space-around;"
+
+chartDivs1.forEach(({ title, grade }) => {
+	const $chartDiv = document.createElement("div");
+	createChart(`city-${grade}-chart`, averageGrades, grade, title, $chartDiv);
+	$chartDiv1.appendChild($chartDiv);
+})
+
+const chartDivs2 = [
+	{ title: "Média MT", grade: "mt" },
+	{ title: "Média geral", grade: "geral" },
+	{ title: "Média CN", grade: "cn" },
+];
+
+const $chartDiv2 = document.createElement("div");
+$chartDiv2.style = "display: flex; alignt-items: center; justify-content: space-around;"
+
+chartDivs2.forEach(({ title, grade }) => {
+	const $chartDiv = document.createElement("div");
+	createChart(`city-${grade}-chart`, averageGrades, grade, title, $chartDiv);
+	$chartDiv2.appendChild($chartDiv);
+})
+
+const $chartDivGroup = document.createElement("div");
+
+$chartDivGroup.appendChild($chartDiv1);
+$chartDivGroup.appendChild($chartDiv2);
+
+$body.appendChild($chartDivGroup);
