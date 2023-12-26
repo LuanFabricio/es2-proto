@@ -1,12 +1,12 @@
 import { Database } from "./database.js";
-import { createDataTable, resetTable } from "./table.js";
+import { createDataTable } from "./table.js";
 import { calcMetrics } from "./metricas.js";
-import { createStateTableFromArray, createStateTableFromMap } from "./cityTable.js";
+import { createStateTableFromArray } from "./cityTable.js";
 import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "./filter.js";
 import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
 import { addExportBtn } from "./export.js";
-import { createChart, createChartCanvas, createCityChart, createPresenceChart } from "./chart.js";
+import { createChart, createPresenceChart } from "./chart.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
