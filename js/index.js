@@ -7,6 +7,7 @@ import createCityGradeSortBy, { cityGradeSortBy } from "./sort.js";
 import mapToArray from "./utils.js";
 import { addExportBtn } from "./export.js";
 import { createChart, createPresenceChart } from "./chart.js";
+import FilterHandler from "./filter_handler.js";
 
 /**
 * @typedef {import("./database.js").Data} Data
@@ -19,18 +20,62 @@ let currentData = db.findAll();
 
 const $body = document.getElementsByTagName("body")[0];
 
+const $dialogState = document.createElement("dialog");
+const $btnDialogState = document.createElement("button");
+$btnDialogState.innerText = "Adicionar filtro";
+$btnDialogState.onclick = () => {
+	$dialogState.open = true;
+};
+$body.appendChild($dialogState);
+
+const $dialogData = document.createElement("dialog");
+const $btnDialogData = document.createElement("button");
+$btnDialogData.innerText = "Adicionar filtro";
+$btnDialogData.onclick = () => {
+	$dialogData.open = true;
+};
+$body.appendChild($dialogData);
+
 const $mainTableDiv = document.createElement("div");
 const $mainDiv = document.createElement("div");
 
-createCityFilter(db.findAll(), $mainTableDiv, $mainDiv);
+$mainDiv.appendChild($btnDialogData);
+
+const $dataCityFilterDiv = document.createElement("div");
+$dataCityFilterDiv.id = "filters-city-div";
+$dataCityFilterDiv.style = "display: flex;";
+
+const dataCityFilter = [
+	{
+		name: "Filtro por município",
+		onAdd: () => { 
+			createCityFilter(db.findAll(), $mainTableDiv, $dataCityFilterDiv);
+		}
+	}
+];
 
 const $presenceFilterDiv = document.createElement("div");
 $presenceFilterDiv.style = "display: flex;";
 $presenceFilterDiv.id = "filters-presence-div";
-createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 1: ", [0]);
-createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 2: ", [1]);
-createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença nos dois dias: ", [0, 1]);
 
+const dataPresencefilterShape = [
+	["Presença no dia 1: ", [0]],
+	["Presença no dia 2: ", [1]],
+	["Presença nos dois dias: ", [0, 1]],
+];
+
+const dataPresencefilter = dataPresencefilterShape.map(val => ({
+	name: val[0].replace(": ", ""),
+	onAdd: () => {
+		createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, val[0], val[1]);
+	}
+}));
+
+// createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 1: ", [0]);
+// createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença no dia 2: ", [1]);
+// createDataPresenceFilter($mainTableDiv, $presenceFilterDiv, currentData, "Presença nos dois dias: ", [0, 1]);
+
+$mainDiv.appendChild($dataCityFilterDiv);
 $mainDiv.appendChild($presenceFilterDiv);
 
 const $dataFiltersDiv = document.createElement("div");
@@ -46,9 +91,22 @@ const dataFiltros = [
 	["Média geral: ", "geral"],
 ];
 
-for (const [label, filterType] of dataFiltros) {
-	createDataGradeFilter($mainTableDiv, $dataFiltersDiv, currentData, label, filterType);
-}
+const dataGradeFilters = dataFiltros.map(val => ({
+	name: val[0].replace(": ", ""),
+	onAdd: () => {
+		createDataGradeFilter($mainTableDiv, $dataFiltersDiv, currentData, val[0], val[1]);
+	}
+}));
+
+// for (const [label, filterType] of dataFiltros) {
+// 	createDataGradeFilter($mainTableDiv, $dataFiltersDiv, currentData, label, filterType);
+// }
+
+const dataFilters = dataPresencefilter.concat(dataGradeFilters).concat(dataCityFilter);
+
+const dataFilterHandler = new FilterHandler(dataFilters, $dialogData);
+dataFilterHandler.render();
+
 
 $mainDiv.appendChild($dataFiltersDiv);
 
@@ -107,15 +165,30 @@ for (const key of averageGrades.keys()) {
 
 $body.appendChild(document.createElement("br"));
 
+$body.appendChild($btnDialogState);
+
 const $cityPresenceFilters = document.createElement("div");
 $cityPresenceFilters.style = "display: flex;";
 $cityPresenceFilters.id = "filters-grade-div";
 
 const $stateDiv = document.createElement("div");
 
-createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 1: ", [0]);
-createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 2: ", [1]);
-createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença nos dias 1 e 2: ", [0, 1]);
+const statePresenceFiltersShape = [
+	["Presença dia 1: ", [0]],
+        ["Presença dia 2: ", [1]],
+        ["Presença nos dias 1 e 2: ", [0, 1]],
+];
+
+const statePresenceFilters = statePresenceFiltersShape.map(val => ({
+	name: val[0].replace(": ", ""),
+	onAdd: () => { 
+		createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, val[0], val[1]);
+	}
+}))
+
+// createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 1: ", [0]);
+// createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença dia 2: ", [1]);
+// createCityPresenceFilter($stateDiv, $cityPresenceFilters, averageGrades, "Presença nos dias 1 e 2: ", [0, 1]);
 
 $body.appendChild($cityPresenceFilters);
 
@@ -132,11 +205,11 @@ const filtros = [
 	["Média geral: ", "geral"]
 ];
 
-// let currentAverageGrades = new Map(averageGrades);
-for (const [label, filterType] of filtros) {
-	// currentAverageGrades = new Map(currentAverageGrades);
-	createCityGradeFilter($stateDiv, $filtersDiv, averageGrades, label, filterType);
-}
+// // let currentAverageGrades = new Map(averageGrades);
+// for (const [label, filterType] of filtros) {
+// 	// currentAverageGrades = new Map(currentAverageGrades);
+// 	createCityGradeFilter($stateDiv, $filtersDiv, averageGrades, label, filterType);
+// }
 
 $body.appendChild($filtersDiv);
 
@@ -205,3 +278,15 @@ $chartDivGroup.appendChild($chartDiv2);
 $chartDivGroup.appendChild($chartDiv3);
 
 $body.appendChild($chartDivGroup);
+
+const stateGradeFilters = filtros.map(filter => ({
+ 		name: filter[0].replace(":", ""), 
+ 		onAdd: () => {
+ 			createCityGradeFilter($stateDiv, $filtersDiv, averageGrades, filter[0], filter[1]);
+ 		}
+}));
+
+const stateFilters = statePresenceFilters.concat(stateGradeFilters);
+
+const stateFilterHandler = new FilterHandler(stateFilters, $dialogState);
+stateFilterHandler.render();
