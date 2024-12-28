@@ -13,6 +13,7 @@ const db = new Database();
 
 let currentData = db.findAll();
 
+document.title = "Alunos";
 const $body = document.getElementsByTagName("body")[0];
 
 const $dialogState = document.createElement("dialog");
