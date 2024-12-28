@@ -1,8 +1,7 @@
 import { Database } from "../js/database.js";
-import { createDataTable } from "../js/table.js";
 import { calcMetrics } from "../js/metricas.js";
 import { createStateTableFromArray } from "../js/cityTable.js";
-import { createCityGradeFilter, createCityFilter, createDataGradeFilter, createDataPresenceFilter, createCityPresenceFilter } from "../js/filter.js";
+import { createCityGradeFilter, createCityPresenceFilter } from "../js/filter.js";
 import createCityGradeSortBy, { cityGradeSortBy } from "../js/sort.js";
 import mapToArray from "../js/utils.js";
 import { addExportBtn } from "../js/export.js";
@@ -18,6 +17,7 @@ const db = new Database();
 
 let currentData = db.findAll();
 
+document.title = "Cidades";
 const $body = document.getElementsByTagName("body")[0];
 
 const averageGrades = calcMetrics(currentData);
